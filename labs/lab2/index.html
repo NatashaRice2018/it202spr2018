@@ -11,8 +11,35 @@
 <body>
 
 <div class="container" id="home"></div>
-<div class="container" id="search"></div>
+<div class="container" id="search">
+    <input type="text" placeholder="query" id="query" required>
+  <button type="submit" id="btnSearch ">Submit</button>
+</div>
 <div class="container" id="results"></div>
 
+<script>
+  
+  function doSearch(){
+  // Built by LucyBot. www.lucybot.com
+var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
+url += '?' + $.param({
+  'api-key': $("#query").val(),
+  'query': "test"
+});
+$.ajax({
+  url: url,
+  method: 'GET',
+}).done(function loadResponse (responce)
+  {
+    concole.log(responce);
+    //i = counter v=the actual record
+    $.each(responce.results, function(i,v)
+    {
+      console.log(v);
+    }
+)}.fail(function(err) {
+  throw err;
+})
+</script>
 </body>
 </html>
