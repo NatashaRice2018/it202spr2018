@@ -12,41 +12,64 @@
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
+  
+  <style>
+  .container {
+    display: none;
+  }
+</style>
 </head>
 <body>
 
-<div class="container" id="home"></div>
+<div class="container" id="home"> <h1> Welecome</h1><button id="btnStart">Start</button></div>
 <div class="container" id="search">
     <input type="text" placeholder="query" id="query" required>
-  <button type="submit" id="btnSearch ">Submit</button>
+  <button id="btnSearch">Submit</button>
 </div>
 <div class="container" id="results"></div>
 
 <script>
   
-  function doSearch(){
+function doSearch()
+{
+  //console.log($("#query").val());
   // Built by LucyBot. www.lucybot.com
 var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
 url += '?' + $.param({
  'api-key': "56077a70e8f74256ae59623432a92605",
  'query': $("#query").val()
 });
+
+
 $.ajax({
   url: url,
   method: 'GET',
-}).done(function(responce)
-  {
-    $("results").append("<p>your search for " + $("#query").val() + " returned");
-    
-    $.each(responce.results, function(i,v)
-    {
-      $("#results").append(v.display_title + " opens on " + v.opening_date + "<br>");
-    }
-)}.fail(function(err) {
+}).done(function(result) {
+  console.log(result);
+  loadResponce(result);
+}).fail(function(err) {
   throw err;
-})
+});
+}
 
-$("btnSearch").on("click", doSearch());
+function loadResponce(responce)
+{
+  console.log("hello");
+  console.log(responce.num_results);
+  $("#results").append("<h2> There are <strong> "+ responce.num_results +"</strong>  results for <strong> " + $("#query").val() +"</strong></h2>");
+   $.each(responce.results, function(i,v)
+   {
+     $("#results").append(v.display_title + " opens on " + v.opening_date + "<br>");
+   })
+}
+
+$("#btnSearch").on("click", doSearch);
+
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+        $("#home").css("display", "block");
+    });
+
 </script>
 </body>
 </html>
