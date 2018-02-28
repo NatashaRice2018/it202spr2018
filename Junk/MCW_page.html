@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<!--
+      MCW Basic
+      2018-02-26
+      Dave Hayes - heymrhayes
+      
+      mcw home:  https://material.io/components/web/
+  
+  -->
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MCW - Toolbar and Snackbar example</title>
+
+  <!-- the MCW stylesheet-->
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+
+  <!-- the material icon font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+</head>
+
+<body class="mdc-typography">
+  
+  <!-- toolbar copied from MCW documentation example -->
+  
+  <header class="mdc-toolbar demo-toolbar">
+    <div class="mdc-toolbar__row">
+      <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+        <a href="#" class="material-icons mdc-toolbar__menu-icon">menu</a>
+        <span class="mdc-toolbar__title">Title</span>
+      </section>
+      <section class="mdc-toolbar__section mdc-toolbar__section--align-end" role="toolbar">
+        <a href="#" class="material-icons mdc-toolbar__icon" aria-label="Download" alt="Download">file_download</a>
+        <a href="#" class="material-icons mdc-toolbar__icon" aria-label="Print this page" alt="Print this page">print</a>
+        <a href="#" class="material-icons mdc-toolbar__icon" aria-label="Bookmark this page" alt="Bookmark this page">bookmark</a>
+      </section>
+    </div>
+  </header>
+  <h1 class="mdc-typography--display1">MCW: Toolbar and Snackbar</h1>
+  <p class="mdc-typography--body1">
+    Take a look at the page source, and look at the comments in the script.
+  </p>
+  <p>Open the console and see the logging when the snackbar action is clicked</p>
+  
+  <p></p>
+
+  <!-- snackbar component copied from MCW documentation example -->
+  
+  <div class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+    <div class="mdc-snackbar__text"></div>
+    <div class="mdc-snackbar__action-wrapper">
+      <button type="button" class="mdc-snackbar__action-button"></button>
+    </div>
+  </div>
+ 
+ 
+   <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  
+  <!-- MCW JavaScript with classes-->
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.js"></script>
+
+  <script>
+    // a reference to the Snackbar class in the mdc library
+    const MDCSnackbar = mdc.snackbar.MDCSnackbar;
+
+    // need a variable to reference it *as* the MDC, not just the DOM element
+    var mySnackbar = new MDCSnackbar($('.mdc-snackbar')[0]);
+
+    // snackbar.show() takes an object as a parameter
+    var snackbarData = { "message": "hello world" };
+
+    // showing the snackbar when the page loads
+    mySnackbar.show(snackbarData);
+
+
+    // event handler on toolbar icon click
+    $(".mdc-toolbar__icon").on("click", function() {
+      
+      // get the text of the clicked element
+      var clickedMenu = $(this).text();
+
+      // show parameter accepts action text and handler
+      snackbarData = {
+        message: "You clicked " + clickedMenu,
+        actionText: 'Log this',
+        actionHandler: function() {
+          console.log("User clicked " + clickedMenu);
+        }
+      };
+      
+      // show the snackbar, passing the data object
+      mySnackbar.show(snackbarData);
+
+    });
+  </script>
+
+
+</body>
+
+</html>

@@ -9,18 +9,51 @@
     </head>
     <body>
         
+        <div><label><input type="checkbox" name="Food-Restriction">None</label></div>
+        
+        <template id="template">
+            <!--create checkboxes-->
+             <div><label><input type="checkbox" name="School-Type">Temp</label></div>
+        </template>
         
         <script>
+        
+        //get a list of all the schools
+        $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$select=school_type&$group=school_type")
+        .done(function(responce) {
+            //create clickboxes to select school.
+            template = document.getElementsByTagName("template")[0];
+            item = template.content.querySelector("input");
             
-            $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json")
-            .done(function(result) {
-                console.log(result);
+            
+             $.each(responce, function(i,v)
+              {
+                   console.log(v.school_type);
+                    a = document.importNode(item, true);
+                    //Add data from the array:
+                    a.textContent = v.school_type;
+                    //append the new node wherever you like:
+                    document.body.appendChild(a);
+              })
+                  
+                console.log(responce);
                 
             }).fail(function(err) {
                 throw err;
                 
             });
+            
+            
+            // $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json")
+            // .done(function(result) {
+            //     console.log(result);
+                
+            // }).fail(function(err) {
+            //     throw err;
+                
+            // });
 
         </script>
+        
     </body>
 </html>
