@@ -95,24 +95,8 @@
         <script>
         
         var markers = [];
-
-        
-        function initMap() {
-             
-             
-    $("#boxes-listing").css("display", "none");
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(null);
-        }
-
-
-        var Chi = {lat: 41.8704, lng: -87.6675};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 10,
-          center: Chi
-        });
-        
-        //clear map before drawing on the map
+        var counter = -1;
+        var first = true;
         
         var colors = ["http://maps.google.com/mapfiles/ms/micons/yellow.png", 
         "http://maps.google.com/mapfiles/ms/micons/blue.png",
@@ -131,14 +115,41 @@
         "http://maps.google.com/mapfiles/ms/micons/red-pushpin.png"
         ];
         
+        function initMap() {
+             
+             
+    $("#boxes-listing").css("display", "none");
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        
+        if(first)
+        {
+            first = false;
+            
+        }
+        else{
+            $("#map").css("display", "block");
+        }
+        
+
+        var Chi = {lat: 41.8704, lng: -87.6675};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: Chi
+        });
+        
+        
         var SchoolType = document.forms['checkboxes'].elements[ 'School-Type' ];
         
         for(var i = 0, len = SchoolType.length; i<len; i++)
         {
+            counter += 1;
+                var color = colors[counter];
             if(SchoolType[i].checked )
             {
-                $("#map").css("display", "block");
-                var numb = i;
+            
+                
                 console.log(SchoolType[i].defaultValue  + " Clicked!")
                 //now we need to find all schools of the selected type
                 var link = "https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type%20IN%20('";
@@ -153,7 +164,7 @@
                           var newMarker = new google.maps.Marker({
                           position: location,
                           map: map,
-                          icon: colors[numb],
+                          icon: new google.maps.MarkerImage(color),
                           //animation: google.maps.Animation.DROP,
                           title: v.long_name
                         });
@@ -167,6 +178,9 @@
             '<h1 id="firstHeading" class="firstHeading">' + v.long_name +'</h1>'+
             '<div id="bodyContent">'+
             '<p>Address:  '+ v.location_address +'</p>'+
+            '<p>Type:  '+ v.school_type +'</p>'+
+            '<p>color:  '+ color +'</p>'+
+            '<p>counter:  '+ counter +'</p>'+
             '</div>'+
             '</div>';
 
