@@ -19,6 +19,10 @@
         height: 400px;
         width: 100%;
        }
+       
+        .container {
+    display: none;
+  }
     </style>
     
 </head>
@@ -56,6 +60,10 @@
             </div>
         </template>
         
+        <div class="container" id="map">
+                
+            </div>
+        
         <div class="container" id="home">
             <h1>Welecome</h1>
             <p>This is an application to display different schools in chicago by their type</p>
@@ -82,13 +90,22 @@
                 </div>
                 
             </div>
-            
-            <div class="container" id="map">
-                
             </div>
+            
         <script>
         
+        var markers = [];
+
+        
         function initMap() {
+             
+             
+    $("#boxes-listing").css("display", "none");
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+
+
         var Chi = {lat: 41.8704, lng: -87.6675};
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
@@ -96,7 +113,6 @@
         });
         
         //clear map before drawing on the map
-        //setMapOnAll(null);
         
         var colors = ["http://maps.google.com/mapfiles/ms/micons/yellow.png", 
         "http://maps.google.com/mapfiles/ms/micons/blue.png",
@@ -121,6 +137,7 @@
         {
             if(SchoolType[i].checked )
             {
+                $("#map").css("display", "block");
                 var numb = i;
                 console.log(SchoolType[i].defaultValue  + " Clicked!")
                 //now we need to find all schools of the selected type
@@ -140,6 +157,9 @@
                           //animation: google.maps.Animation.DROP,
                           title: v.long_name
                         });
+                        
+                        markers.push(newMarker);
+                        
                         
                          var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
@@ -292,6 +312,18 @@
 
 
 $("#btnMap").on("click", initMap);
+ $( document ).ready(function() {
+        console.log( "document loaded" );
+        $("#home").css("display", "block");
+    });
+    
+    $("#home").on("click", hidestuff);
+
+function hidestuff(){
+  
+   $("#home").css("display", "none");
+    $("#boxes-listing").css("display", "block");
+}
 
         </script>
         <script async defer
