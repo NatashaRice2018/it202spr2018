@@ -25,8 +25,8 @@
     <body>
         
         <template id="card">
-            <div class="card">
-              <div class="card-block">
+            <div class="col-sm-3">
+              <div class="card" >
                 <h4 class="card-title">Card title</h4>
                 <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
                 <p><b>Summary</b></p>
@@ -59,18 +59,22 @@
         <div class="container" id="home">
             <h1>Welecome</h1>
             <p>This is an application to display different schools in chicago by their type</p>
-            <h2>Click start below yo get started!!</h1>
+            <p>On the Next page you will see a listing of all schools by type, along with definitions for what each type is</p>
+            <p>at the top of the page you will see a checklist of school-types, simply select the school types you want to see maped and click "Show selected on Map"</p>
+            <h4>Click start below yo get started!!</h4>
             <button id="btnStart">Start</button>
         </div>
         
         <div class="container" id="boxes-listing">
             <h1>School Type Selection</h1>
             <p>Please select a school type from the options below</p>
-            <div id="checkboxes"></div>
+            <form id="checkboxes" class="checkboxes"></form>
+            <button id="btnMap">Show selected on Map</button>
             
             <h1>Listing</h1>
             <p>Below is a listing of all schools by their school type</p>
             <div  id="listing">
+                
                 
             <div class="container">
                 <div class="panel-group" id="listing">
@@ -91,9 +95,78 @@
           center: Chi
         });
         
+        //clear map before drawing on the map
+        //setMapOnAll(null);
+        
+        var colors = ["http://maps.google.com/mapfiles/ms/micons/yellow.png", 
+        "http://maps.google.com/mapfiles/ms/micons/blue.png",
+        "http://maps.google.com/mapfiles/ms/micons/green.png",
+        "http://maps.google.com/mapfiles/ms/micons/lightblue.png",
+        "http://maps.google.com/mapfiles/ms/micons/orange.png", 
+        "http://maps.google.com/mapfiles/ms/micons/pink.png",
+        "http://maps.google.com/mapfiles/ms/micons/purple.png", 
+        "http://maps.google.com/mapfiles/ms/micons/red.png",
+        "http://maps.google.com/mapfiles/ms/micons/ylw-pushpin.png", 
+        "http://maps.google.com/mapfiles/ms/micons/blue-pushpin.png", 
+        "http://maps.google.com/mapfiles/ms/micons/grn-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/ltblu-pushpin.png" ,
+        "http://maps.google.com/mapfiles/ms/micons/pink-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/purple-pushpin.png",
+        "http://maps.google.com/mapfiles/ms/micons/red-pushpin.png"
+        ];
+        
+        var SchoolType = document.forms['checkboxes'].elements[ 'School-Type' ];
+        
+        for(var i = 0, len = SchoolType.length; i<len; i++)
+        {
+            if(SchoolType[i].checked )
+            {
+                var numb = i;
+                console.log(SchoolType[i].defaultValue  + " Clicked!")
+                //now we need to find all schools of the selected type
+                var link = "https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type%20IN%20('";
+                 //remember to add ')
+                  $.get(link + SchoolType[i].defaultValue + "')")
+                  .done(function(info) {
+                      
+                      $.each(info, function(x,v)
+                      {
+                          var location = {lat: parseFloat(v.location.coordinates[1]), lng: parseFloat(v.location.coordinates[0])};
+                
+                          var newMarker = new google.maps.Marker({
+                          position: location,
+                          map: map,
+                          icon: colors[numb],
+                          //animation: google.maps.Animation.DROP,
+                          title: v.long_name
+                        });
+                        
+                         var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h1 id="firstHeading" class="firstHeading">' + v.long_name +'</h1>'+
+            '<div id="bodyContent">'+
+            '<p>Address:  '+ v.location_address +'</p>'+
+            '</div>'+
+            '</div>';
+
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        newMarker.addListener('click', function() {
+          infowindow.open(map, newMarker);
+        });
+        
+                      })
+                  })
+            }
+        }
+        
+        console.log("Map");
         
         
-        var url = "https://data.cityofchicago.org/resource/fpx9-pjqk.json";
+
        
        
         
@@ -111,7 +184,7 @@
                 var checkbox = document.createElement("input");
                 
                 checkbox.type = "checkbox";    // make the element a checkbox
-                checkbox.name = v.school_type;      // give it a name we can check on the server side
+                checkbox.name = "School-Type";      // give it a name we can check on the server side
                 checkbox.value = v.school_type;         // make its value "pair"
                 checkbox.id = v.school_type;
                 s1.appendChild(checkbox);
@@ -216,6 +289,9 @@
                     }
                 });
             }
+
+
+$("#btnMap").on("click", initMap);
 
         </script>
         <script async defer
