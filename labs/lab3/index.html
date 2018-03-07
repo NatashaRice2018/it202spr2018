@@ -20,9 +20,9 @@
       var ctx=c.getContext("2d");
       
        var game = {lives: 3, score: 0, state: true, speed: 1};
-      var player = {x: 75, y:110 , color: "blue", radius: 25};     
-      var harm = {x:  Math.floor(Math.random() * c.width), y:100 , color: "red", radius: 25}; 
-      var benefit = {x: Math.floor(Math.random() * c.width) + 1, y:100, color: "green", radius: 25, img: 'http://www.stickpng.com/assets/images/58864aebd27829db9cf6da52.png'};
+      var player = {x: 75, y:110 , color: "blue", radius: 25, size:50, img:'http://freepngimages.com/wp-content/uploads/2015/08/ufo-spaceship.png'};     
+      var harm = {x:  Math.floor(Math.random() * c.width), y:100 , color: "red", radius: 25, size:50, img:'http://www.stickpng.com/assets/images/580b585b2edbce24c47b264e.png'}; 
+      var benefit = {x: Math.floor(Math.random() * c.width) + 1, y:100, color: "green", radius: 25, size:50, img: 'http://www.stickpng.com/assets/images/58864aebd27829db9cf6da52.png'};
       
       
        var imageObj = new Image();
@@ -31,13 +31,27 @@
         ctx.drawImage(imageObj, 10, 10);
       };
       imageObj.src = 'https://cdn.spacetelescope.org/archives/images/wallpaper2/heic1509a.jpg';
-      
-      var benefitImg = new Image();
+     
+     var benefitObj = new Image();
 
-      benefitImg.onload = function() {
-        ctx.drawImage(benefitImg, 10, 10);
+      benefitObj.onload = function() {
+        ctx.drawImage(benefitObj, 10, 10);
       };
-      benefitImg.src = benefit.img;
+      benefitObj.src = benefit.img;
+     
+     var harmObj = new Image();
+
+      harmObj.onload = function() {
+        ctx.drawImage(harmObj, 10, 10);
+      };
+      harmObj.src = harm.img;
+      
+      var playerObj = new Image();
+
+      playerObj.onload = function() {
+        ctx.drawImage(playerObj, 10, 10);
+      };
+      playerObj.src = player.img;
 
 
     
@@ -85,10 +99,11 @@
          }
           
         ctx.clearRect(0,0,c.width,c.height);
-        //ctx.drawImage(imageObj, 10, 10);
+        ctx.drawImage(imageObj, 10, 10);
 
         // TODO:  draw score and lives
         ctx.font = "12px Arial"
+        ctx.fillStyle = "white";
         ctx.fillText("Level: " + (game.speed) , 10, 50)
         ctx.fillText("Lives: " + game.lives + " Score: " + game.score, 10, 60)
         
@@ -99,10 +114,11 @@
           harm.x = c.width;
         }
         
-        ctx.fillStyle = harm.color;
-        ctx.beginPath();
-        ctx.arc(harm.x,harm.y,harm.radius,0,2*Math.PI);
-        ctx.fill();
+        //ctx.fillStyle = harm.color;
+        //ctx.beginPath();
+        //ctx.arc(harm.x,harm.y,harm.radius,0,2*Math.PI);
+        //ctx.fill();
+        ctx.drawImage(harmObj, harm.x, harm.y, harm.size, harm.size);
         
         // collision check, using code from 
         //   https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
@@ -140,7 +156,7 @@
         //ctx.fillStyle = benefit.color;
         //ctx.beginPath();
         //ctx.arc(benefit.x,benefit.y,benefit.radius,0,2*Math.PI);
-        ctx.drawImage(benefit.img, benefit.x, benefit.y, benefit.radius, benefit.radius);
+        ctx.drawImage(benefitObj, benefit.x, benefit.y, benefit.size, benefit.size);
         
         // collision check, using code from 
         //   https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
@@ -169,10 +185,12 @@
         }
 
         // draw player
-        ctx.fillStyle = player.color;
-        ctx.beginPath();
-        ctx.arc(player.x,player.y,player.radius,0,2*Math.PI);
-        ctx.fill();
+        //ctx.fillStyle = player.color;
+        //ctx.beginPath();
+        //ctx.arc(player.x,player.y,player.radius,0,2*Math.PI);
+        //ctx.fill();
+        ctx.drawImage(playerObj, player.x, player.y, player.size, player.size);
+
       
         requestAnimationFrame(draw);
       }
