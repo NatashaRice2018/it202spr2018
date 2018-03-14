@@ -12,7 +12,7 @@
             // Has support!
             console.log("can Cashe")
             caches.open('test-cache').then(function(cache) { 
-                  cache.addAll(['#img' ])
+                  cache.addAll(['#img', '/'])
                     .then(function() { 
                       // Cached!
                       console.log("Stuff Cached?");
