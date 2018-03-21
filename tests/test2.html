@@ -24,7 +24,7 @@
 </div>
     <script>
        
-        $.get("https://data.cityofchicago.org/resource/tt4n-kn4t.json?$where=full_or_part_time%20IN%20(%27P%27)")
+        $.get("https://data.cityofchicago.org/resource/tt4n-kn4t.json?department=CITY%20COUNCIL&full_or_part_time=P")
         .done(function(responce)
         {
               console.log(responce);
@@ -33,7 +33,7 @@
               $.each(responce, function(i,v)
               {
                   console.log(v.name)
-                   $("#results").append(v.name + " works " + v.job_titles + "<br>");
+                   $("#results").append(v.name + " Department " + v.department + "<br>");
                   
               
               
