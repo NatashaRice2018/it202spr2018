@@ -27,7 +27,8 @@
 	<meta name="twitter:card" content="" />
 
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-	
+
+
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="css/animate.css">
 	<!-- Icomoon Icon Fonts-->
@@ -53,7 +54,15 @@
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
 	<![endif]-->
+	
+  <!-- the MCW stylesheet-->
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
 
+  <!-- the material icon font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Material Components CSS? -->
+  <link rel="stylesheet" href="css/material-components.css">
+  
 	</head>
 	<body>
 		
@@ -115,7 +124,9 @@
 				<div class="col-md-12 mt-text text-center animate-box" data-animate-effect="fadeInUp">
 					<h1> Visuilations for <strong>UIC</strong> Classes</h1>	
 					<h2>Want to see how a class performed last semester? A Professors Grade distribution? </h2>
-					<div class="text-center"><a href="https://vimeo.com/channels/staffpicks/93951774" class="btn btn-primary btn-lg popup-vimeo">Search Now!</a></div>
+					<div class="text-center">
+						<a href="search.html" class="mdc-button mdc-button--raised"><h2>Start!</h2></a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -500,7 +511,6 @@
 	<div class="gototop js-top">
 		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
 	</div>
-	
 	<!-- jQuery -->
 	<script src="js/jquery.min.js"></script>
 	<!-- jQuery Easing -->
@@ -525,6 +535,14 @@
 	<!-- Main -->
 	<script src="js/main.js"></script>
 
+  
+  <!-- MCW JavaScript with classes-->
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.js"></script>
+  
+  <!-- Material components Ripple -->
+  <script>
+  	mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
+  </script>
 	</body>
 </html>
 
