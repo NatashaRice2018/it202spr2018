@@ -1,17 +1,30 @@
 <video id="player" controls autoplay></video>
 <button id="capture">Capture</button>
-<canvas id="canvas" width=320 height=240></canvas>
+<div id="imageData" >
+
+  <div id="lable"></div>
+  
+</div>
+<canvas id="canvas" width=320 height=240 style="display: none;"></canvas>
+<canvas id="allImages"></canvas>
+
  <script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
 <script>
   const player = document.getElementById('player');
   const canvas = document.getElementById('canvas');
   const context = canvas.getContext('2d');
   const captureButton = document.getElementById('capture');
-  var useCloudVision();
+  const visionApiEndpoint = "https://vision.googleapis.com/v1/images:annotate";
+  const allImages = document.getElementById('allImages');
+  const allImagesContext = allImages.getContext('2d');
   
+  var requestBody, nextX = 0, nextY = 0;
+  
+  allImages.width = window.innerWidth;
+  allImages.height = 300;
 
   const constraints = {
     video: true,
@@ -20,6 +33,9 @@
   captureButton.addEventListener('click', () => {
     // Draw the video frame to the canvas.
     context.drawImage(player, 0, 0, canvas.width, canvas.height);
+    useCloudVision("FACE_DETECTION")
+    useCloudVision("LABEL_DETECTION")
+    
   });
 
   // Attach the video stream to the video element and autoplay.
@@ -28,35 +44,88 @@
       player.srcObject = stream;
     });
     
-    function useCloudVision()
+    function useCloudVision(type)
     {
-      key = "AIzaSyALLW59osmKnh0eIfEfbsirzhBhcnyRfws";
-      
-      var request = 
+        
+            var requestBody = {
+                "requests":[
                   {
-                    "requests":[
+                    "image":{
+                      "content":canvas.toDataURL().split(",")[1]
+                    },
+                    "features":[
                       {
-                        "image":{
-                          "content":canvas.toDataURL().split(",")[1]
-                        },
-                        "features":[
-                          {
-                            "type":"LABEL_DETECTION",
-                            "maxResults":10
-                          }
-                        ]
+                        "type":type,
+                        "maxResults":10
                       }
                     ]
-                  };
-        
+                  }
+                ]
+              };  
         $.ajax({
           method: "POST",
           contentType: "application/json",
-          url: "https://vision.googleapis.com/v1/images:annotate?key=" + key,
-          data: JSON.stringify(request)
+          url: visionApiEndpoint + "?key=AIzaSyALLW59osmKnh0eIfEfbsirzhBhcnyRfws",
+          data: JSON.stringify(requestBody)
         })
         .done(function(responce) {
           console.log(responce);
+          
+          if(type == "FACE_DETECTION")
+          {
+                  var faceVertices = responce.responses[0].faceAnnotations[0].boundingPoly.vertices;
+                  console.log(faceVertices);
+                  
+                  // find corners
+                  var topLeft = faceVertices[0];
+                  var bottomRight = faceVertices[2];
+                  console.log(bottomRight, bottomRight.x, topLeft, topLeft.x);
+                  
+                  // determine width and height for cropping
+                  var faceWidth = bottomRight.x - topLeft.x;
+                  var faceHeight = bottomRight.y - topLeft.y;
+                  var sourceX = topLeft.x;
+                  var sourceY = topLeft.y;
+                  var destWidth = faceWidth;
+                  var destHeight = faceHeight;
+
+
+                  // check to see whether we need to start a new row or column
+                    nextX = 0;
+                    nextY += faceHeight;
+                  
+                  
+                  if (nextY + faceHeight > allImages.height) {
+                    // make the collage taller as needed
+                    //   but resizing clears it, so we need to
+                    //   save and redraw the data
+                    
+                    var imgData=allImagesContext.getImageData(0,0,allImages.width, allImages.height);
+
+                    allImages.height += faceHeight;
+                    allImagesContext.putImageData(imgData,0,0);
+                  }                  
+
+                  allImagesContext.drawImage(canvas, sourceX, sourceY, faceWidth, faceHeight, nextX, nextY, faceWidth, faceHeight); 
+                  
+                  nextX += faceWidth;           
+          }
+          if(type == "LABEL_DETECTION")
+          {
+            //
+            console.log("Labes")
+            console.log(responce.responses[0].labelAnnotations[0].description);
+            $.each(responce.responses[0].labelAnnotations, function(i,v)
+            {
+            allImagesContext.fillStyle = "red";
+            allImagesContext.font = "12px Arial";
+            allImagesContext.fillText(v.description, nextX, nextY);
+            nextX += 10 + (v.description.length * 10);
+            console.log(v.description);
+            } 
+            )
+            
+          }
         })
         
       

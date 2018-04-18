@@ -25,3 +25,13 @@
 	background-image: url('https://source.unsplash.com/featured/400x200?sig=2');
 }
 
+
+.mdc-toolbar__row:first-child::after {
+    background-image: url("/images/Chicago.jpeg");
+    background-size: cover;
+    background-position: center;
+  }
+
+  #my-flexible-header {
+    --mdc-toolbar-ratio-to-extend-flexible: 3;
+  }
