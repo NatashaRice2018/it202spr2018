@@ -1,8 +1,8 @@
 var cacheName = 'BigProject';
 var dataCacheName = 'BigProject-v1';
 var filesToCache = [
-  '../',
-  '../index.html',
+  '/',
+  '/index.html',
 ];
 
 self.addEventListener('install', function(e) {
