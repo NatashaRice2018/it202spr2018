@@ -406,13 +406,17 @@
               element.textContent = obj["courseName"];
               var element = card.content.querySelector(".mdc-card__supporting-text");
               element.textContent = obj["courseName"] + " Has been taught for a total of " + obj["index"] + " semesters in this dataset (" + obj["semesters"] + ") to a total of " + obj["total"] + " students";
-
-              var imglink = "http://chart.apis.google.com/chart?chs=300x225&cht=p&chd=t:" + obj["As"] / obj["total"] + "," +
+              
+              
+              var imglink = "https://chart.apis.google.com/chart?chs=300x225&cht=p&chd=t:" + obj["As"] / obj["total"] + "," +
                 obj["Bs"] / obj["total"] + "," +
                 obj["Cs"] / obj["total"] + "," +
                 obj["Ds"] / obj["total"] + "," +
                 obj["Fs"] / obj["total"] +
                 "&chdl=A's|B's|C's|D's|F's";
+                
+                console.log("HERE!!!")
+                console.log(imglink);
 
               var element = card.content.querySelector("img");
               $(element).attr('src', imglink);
