@@ -18,6 +18,7 @@ var filesToCache = [
   './images/thunderstorm.png',
   './images/twister.png',
   './images/wind.png',
+  'https://unpkg.com/material-components-web@latest/dist/material-components-web.js'
 ];
 
 self.addEventListener('install', function(e) {
