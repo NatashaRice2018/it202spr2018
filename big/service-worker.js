@@ -1,23 +1,8 @@
 var cacheName = 'BigProject';
 var dataCacheName = 'BigProject-v1';
 var filesToCache = [
-  './',
-  './index.html',
-  './css/material-components.css',
-  './images/clear.png',
-  './images/clear-night.png',
-  './images/cloudy-scattered-showers.png',
-  './images/cloudy_s_sunny.png',
-  './images/fog.png',
-  './images/hail.png',
-  './images/partly-cloudy.png',
-  './images/rain.png',
-  './images/scattered-showers.png',
-  './images/sleet.png',
-  './images/snow.png',
-  './images/thunderstorm.png',
-  './images/twister.png',
-  './images/wind.png',
+  '../',
+  '../index.html',
 ];
 
 self.addEventListener('install', function(e) {
