@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+<html>
+
+<head>
+    <title>Final pt 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+
+        .container {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <template id="card">
+          <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1 top">List group item heading</h5>
+              <small class="type">3 days ago</small>
+            </div>
+            <p class="mb-1 addr">address</p>
+            <p class="mb-1 CSZ">City State Zip</p>
+            <p class="mb-1 phone">phone</p>
+            <small class="op">hours</small>
+          </a>
+        </template>
+
+
+    <div class="container" id="map">
+
+    </div>
+
+    <div class="container" id="home">
+        <p>Final Exam part 2</p>
+        <form id="selBox" class="selBox"></form>
+        <button id="btnStart">Start</button>
+    </div>
+
+    <div class="container" id="cards">
+        <p>hello</p>
+        <div class="list-group">
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            console.log("document loaded");
+            $("#home").css("display", "block");
+        });
+
+        $("#btnStart").on("click", loadcards);
+        var markers = [];
+
+        $.get("https://data.cityofchicago.org/resource/t57k-za2y.json?$SELECT=distinct%20clinic_type")
+            .done(function(responce) {
+                var s1 = document.getElementById("selBox");
+
+                $.each(responce, function(i, v) {
+
+                    var checkbox = document.createElement("input");
+
+                    checkbox.type = "radio"; // make the element a checkbox
+                    checkbox.name = "clinic_type"; // give it a name we can check on the server side
+                    checkbox.value = v.clinic_type; // make its value "pair"
+                    checkbox.id = v.clinic_type;
+                    s1.appendChild(checkbox);
+
+                    var label = document.createElement('label')
+                    label.htmlFor = v.clinic_type;
+                    label.appendChild(document.createTextNode(v.clinic_type));
+
+                    s1.appendChild(label);
+
+                });
+            });
+
+        function loadcards() {
+            $("#cards").css("display", "block");
+            $("#map").css("display", "block");
+
+            var ct = document.forms['selBox'].elements['clinic_type'];
+
+            var Chi = { lat: 41.8704, lng: -87.6675 };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: Chi
+            });
+
+            for (var i = 0, len = ct.length; i < len; i++) {
+                if (ct[i].checked) {
+                    $.get("https://data.cityofchicago.org/resource/t57k-za2y.json?clinic_type=" + ct[i].id)
+                        .done(function(responce) {
+
+                            $.each(responce, function(i, v) {
+
+                                var card = document.querySelector('#card');
+                                var element = card.content.querySelector(".top");
+                                element.textContent = v.site_name;
+                                var element = card.content.querySelector(".type");
+                                element.textContent = v.clinic_type;
+                                var element = card.content.querySelector(".addr");
+                                element.textContent = v.street_address;
+                                var element = card.content.querySelector(".CSZ");
+                                element.textContent = v.city + ", " + v.state + ", " + v.zip;
+                                var element = card.content.querySelector(".phone");
+                                element.textContent = v.phone_1;
+                                var element = card.content.querySelector(".op");
+                                element.textContent = v.hours_of_operation;
+
+                                var loc = document.querySelector(".list-group");
+                                var clone = document.importNode(card.content, true);
+                                loc.appendChild(clone);
+
+                                // MAP Stuff
+                                var location = { lat: parseFloat(v.latitude), lng: parseFloat(v.longitude) };
+
+                                var newMarker = new google.maps.Marker({
+                                    position: location,
+                                    map: map,
+                                    //animation: google.maps.Animation.DROP,
+                                    title: v.site_name
+                                });
+
+                                markers.push(newMarker);
+
+
+                                var contentString = '<div id="content">' +
+                                    '<div id="siteNotice">' +
+                                    '</div>' +
+                                    '<h1 id="firstHeading" class="firstHeading">' + v.site_name + '</h1>' +
+                                    '<div id="bodyContent">' +
+                                    '<p>Address:  ' + v.street_address + '</p>' +
+                                    '<p>Type:  ' + v.clinic_type + '</p>' +
+                                    '</div>' +
+                                    '</div>';
+
+                                var infowindow = new google.maps.InfoWindow({
+                                    content: contentString
+                                });
+
+                                newMarker.addListener('click', function() {
+                                    infowindow.open(map, newMarker);
+                                });
+
+                            });
+                        });
+                }
+            }
+
+
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALLW59osmKnh0eIfEfbsirzhBhcnyRfws&callback=initMap">
+    </script>
+
+</body>
+
+</html>
